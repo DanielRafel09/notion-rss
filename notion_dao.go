@@ -221,17 +221,6 @@ func (dao NotionDao) AddRssItem(item RssItem) error {
 					},
 				}},
 			},
-			"Description": notionapi.RichTextProperty{
-				Type: "rich_text",
-				RichText: []notionapi.RichText{{
-					Type: notionapi.ObjectTypeText,
-					Text: notionapi.Text{
-						Content: *item.description,
-					},
-					PlainText: *item.description,
-				},
-				},
-			},
 			"Link": notionapi.URLProperty{
 				Type: "url",
 				URL:  item.link.String(),
