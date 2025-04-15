@@ -57,19 +57,33 @@ func GetRssContentFrom(feed *FeedDatabaseItem, afterTime time.Time) []*RssItem {
 	return ExtractRssContentFeed(feedContent, afterTime, publishAllItems, feed.Name)
 }
 
-// ExtractRssContentFeed Extract RSS content from an RSS feed
 func ExtractRssContentFeed(f *gofeed.Feed, afterTime time.Time, publishAllItems bool, databaseFeedName string) []*RssItem {
-	result := make([]*RssItem, len(f.Items))
-	count := 0
-	for _, item := range f.Items {
-		if publishAllItems || item.PublishedParsed.After(afterTime) {
-			result[count] = convert(item, databaseFeedName)
-			count++
-		}
-	}
-	fmt.Printf("Feed %s has %d items. %d are eligible to be uploaded\n", f.Title, len(f.Items), count)
-	return result[:count]
+    if f == nil || f.Items == nil {
+        return nil
+    }
+    
+    result := make([]*RssItem, len(f.Items))
+    count := 0
+    for _, item := range f.Items {
+        // Check if item and PublishedParsed are not nil
+        if item != nil && item.PublishedParsed != nil {
+            if publishAllItems || item.PublishedParsed.After(afterTime) {
+                result[count] = convert(item, databaseFeedName)
+                count++
+            }
+        }
+    }
+    
+    if f.Title != "" {
+        fmt.Printf("Feed %s has %d items. %d are eligible to be uploaded\n", f.Title, len(f.Items), count)
+    }
+    
+    if count == 0 {
+        return nil
+    }
+    return result[:count]
 }
+
 
 // convert gofeed.Item into an internal RSSItem model.
 func convert(item *gofeed.Item, itemFeedName string) *RssItem {
