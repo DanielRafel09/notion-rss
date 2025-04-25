@@ -97,6 +97,6 @@ func convert(item *gofeed.Item, itemFeedName string) *RssItem {
 		feedName:    itemFeedName,
 		published:   item.PublishedParsed,
 		description: &item.Description,
-		status:      "Not started"
+		status:      "Not started",
 	}
 }
